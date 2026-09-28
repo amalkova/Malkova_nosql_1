@@ -1,0 +1,683 @@
+
+=== Завдання 1. BEFORE INDEX ===
+{
+  explainVersion: '1',
+  queryPlanner: {
+    namespace: 'spotify.tracks',
+    parsedQuery: {
+      '$and': [
+        {
+          track_genre: {
+            '$eq': 'pop'
+          }
+        },
+        {
+          'audio_features.danceability': {
+            '$gte': 0.7
+          }
+        }
+      ]
+    },
+    indexFilterSet: false,
+    queryHash: '0E1A4507',
+    planCacheShapeHash: '0E1A4507',
+    planCacheKey: 'F6F4E2CB',
+    optimizationTimeMillis: 0,
+    maxIndexedOrSolutionsReached: false,
+    maxIndexedAndSolutionsReached: false,
+    maxScansToExplodeReached: false,
+    prunedSimilarIndexes: false,
+    winningPlan: {
+      isCached: false,
+      stage: 'SORT',
+      sortPattern: {
+        popularity: -1
+      },
+      memLimit: 33554432,
+      type: 'simple',
+      inputStage: {
+        stage: 'COLLSCAN',
+        filter: {
+          '$and': [
+            {
+              track_genre: {
+                '$eq': 'pop'
+              }
+            },
+            {
+              'audio_features.danceability': {
+                '$gte': 0.7
+              }
+            }
+          ]
+        },
+        direction: 'forward'
+      }
+    },
+    rejectedPlans: []
+  },
+  executionStats: {
+    executionSuccess: true,
+    nReturned: 354,
+    executionTimeMillis: 85,
+    totalKeysExamined: 0,
+    totalDocsExamined: 113999,
+    executionStages: {
+      isCached: false,
+      stage: 'SORT',
+      nReturned: 354,
+      executionTimeMillisEstimate: 80,
+      works: 114355,
+      advanced: 354,
+      needTime: 114000,
+      needYield: 0,
+      saveState: 6,
+      restoreState: 6,
+      isEOF: 1,
+      sortPattern: {
+        popularity: -1
+      },
+      memLimit: 33554432,
+      type: 'simple',
+      totalDataSizeSorted: 197854,
+      usedDisk: false,
+      spills: 0,
+      spilledDataStorageSize: 0,
+      inputStage: {
+        stage: 'COLLSCAN',
+        filter: {
+          '$and': [
+            {
+              track_genre: {
+                '$eq': 'pop'
+              }
+            },
+            {
+              'audio_features.danceability': {
+                '$gte': 0.7
+              }
+            }
+          ]
+        },
+        nReturned: 354,
+        executionTimeMillisEstimate: 74,
+        works: 114000,
+        advanced: 354,
+        needTime: 113645,
+        needYield: 0,
+        saveState: 6,
+        restoreState: 6,
+        isEOF: 1,
+        direction: 'forward',
+        docsExamined: 113999
+      }
+    }
+  },
+  queryShapeHash: '4AFB65AFB2793075B4243636AC268260D2A082BDA5478AA5658DDED6E071285D',
+  command: {
+    find: 'tracks',
+    filter: {
+      track_genre: 'pop',
+      'audio_features.danceability': {
+        '$gte': 0.7
+      }
+    },
+    sort: {
+      popularity: -1
+    },
+    '$db': 'spotify'
+  },
+  serverInfo: {
+    host: 'ac-ocjzcqw-shard-00-01.3foxqpi.mongodb.net',
+    port: 27017,
+    version: '8.0.32',
+    gitVersion: 'f9eb55a7cc900f33a722a5b32a0fdbf54385c749'
+  },
+  serverParameters: {
+    internalQueryFacetBufferSizeBytes: 104857600,
+    internalQueryFacetMaxOutputDocSizeBytes: 104857600,
+    internalLookupStageIntermediateDocumentMaxSizeBytes: 16793600,
+    internalDocumentSourceGroupMaxMemoryBytes: 104857600,
+    internalQueryMaxBlockingSortMemoryUsageBytes: 33554432,
+    internalQueryProhibitBlockingMergeOnMongoS: 0,
+    internalQueryMaxAddToSetBytes: 104857600,
+    internalDocumentSourceSetWindowFieldsMaxMemoryBytes: 104857600,
+    internalQueryFrameworkControl: 'trySbeRestricted',
+    internalQueryPlannerIgnoreIndexWithCollationForRegex: 1
+  },
+  ok: 1,
+  '$clusterTime': {
+    clusterTime: Timestamp({ t: 1790619874, i: 16 }),
+    signature: {
+      hash: Binary.createFromBase64('CROYONlS8mj9xEYAc/usl/Ep6ME=', 0),
+      keyId: Long('7657627011719889078')
+    }
+  },
+  operationTime: Timestamp({ t: 1790619874, i: 16 })
+}
+
+=== Creating index ===
+
+=== Завдання 1. AFTER INDEX ===
+{
+  explainVersion: '1',
+  queryPlanner: {
+    namespace: 'spotify.tracks',
+    parsedQuery: {
+      '$and': [
+        {
+          track_genre: {
+            '$eq': 'pop'
+          }
+        },
+        {
+          'audio_features.danceability': {
+            '$gte': 0.7
+          }
+        }
+      ]
+    },
+    indexFilterSet: false,
+    queryHash: '0E1A4507',
+    planCacheShapeHash: '0E1A4507',
+    planCacheKey: 'D55B24A2',
+    optimizationTimeMillis: 0,
+    maxIndexedOrSolutionsReached: false,
+    maxIndexedAndSolutionsReached: false,
+    maxScansToExplodeReached: false,
+    prunedSimilarIndexes: false,
+    winningPlan: {
+      isCached: false,
+      stage: 'FETCH',
+      inputStage: {
+        stage: 'IXSCAN',
+        keyPattern: {
+          track_genre: 1,
+          popularity: -1,
+          'audio_features.danceability': 1
+        },
+        indexName: 'idx_genre_popularity_danceability',
+        isMultiKey: false,
+        multiKeyPaths: {
+          track_genre: [],
+          popularity: [],
+          'audio_features.danceability': []
+        },
+        isUnique: false,
+        isSparse: false,
+        isPartial: false,
+        indexVersion: 2,
+        direction: 'forward',
+        indexBounds: {
+          track_genre: [
+            '["pop", "pop"]'
+          ],
+          popularity: [
+            '[MaxKey, MinKey]'
+          ],
+          'audio_features.danceability': [
+            '[0.7, inf.0]'
+          ]
+        }
+      }
+    },
+    rejectedPlans: []
+  },
+  executionStats: {
+    executionSuccess: true,
+    nReturned: 354,
+    executionTimeMillis: 2,
+    totalKeysExamined: 412,
+    totalDocsExamined: 354,
+    executionStages: {
+      isCached: false,
+      stage: 'FETCH',
+      nReturned: 354,
+      executionTimeMillisEstimate: 1,
+      works: 412,
+      advanced: 354,
+      needTime: 57,
+      needYield: 0,
+      saveState: 0,
+      restoreState: 0,
+      isEOF: 1,
+      docsExamined: 354,
+      alreadyHasObj: 0,
+      inputStage: {
+        stage: 'IXSCAN',
+        nReturned: 354,
+        executionTimeMillisEstimate: 1,
+        works: 412,
+        advanced: 354,
+        needTime: 57,
+        needYield: 0,
+        saveState: 0,
+        restoreState: 0,
+        isEOF: 1,
+        keyPattern: {
+          track_genre: 1,
+          popularity: -1,
+          'audio_features.danceability': 1
+        },
+        indexName: 'idx_genre_popularity_danceability',
+        isMultiKey: false,
+        multiKeyPaths: {
+          track_genre: [],
+          popularity: [],
+          'audio_features.danceability': []
+        },
+        isUnique: false,
+        isSparse: false,
+        isPartial: false,
+        indexVersion: 2,
+        direction: 'forward',
+        indexBounds: {
+          track_genre: [
+            '["pop", "pop"]'
+          ],
+          popularity: [
+            '[MaxKey, MinKey]'
+          ],
+          'audio_features.danceability': [
+            '[0.7, inf.0]'
+          ]
+        },
+        keysExamined: 412,
+        seeks: 58,
+        dupsTested: 0,
+        dupsDropped: 0
+      }
+    }
+  },
+  queryShapeHash: '4AFB65AFB2793075B4243636AC268260D2A082BDA5478AA5658DDED6E071285D',
+  command: {
+    find: 'tracks',
+    filter: {
+      track_genre: 'pop',
+      'audio_features.danceability': {
+        '$gte': 0.7
+      }
+    },
+    sort: {
+      popularity: -1
+    },
+    '$db': 'spotify'
+  },
+  serverInfo: {
+    host: 'ac-ocjzcqw-shard-00-01.3foxqpi.mongodb.net',
+    port: 27017,
+    version: '8.0.32',
+    gitVersion: 'f9eb55a7cc900f33a722a5b32a0fdbf54385c749'
+  },
+  serverParameters: {
+    internalQueryFacetBufferSizeBytes: 104857600,
+    internalQueryFacetMaxOutputDocSizeBytes: 104857600,
+    internalLookupStageIntermediateDocumentMaxSizeBytes: 16793600,
+    internalDocumentSourceGroupMaxMemoryBytes: 104857600,
+    internalQueryMaxBlockingSortMemoryUsageBytes: 33554432,
+    internalQueryProhibitBlockingMergeOnMongoS: 0,
+    internalQueryMaxAddToSetBytes: 104857600,
+    internalDocumentSourceSetWindowFieldsMaxMemoryBytes: 104857600,
+    internalQueryFrameworkControl: 'trySbeRestricted',
+    internalQueryPlannerIgnoreIndexWithCollationForRegex: 1
+  },
+  ok: 1,
+  '$clusterTime': {
+    clusterTime: Timestamp({ t: 1790619874, i: 66 }),
+    signature: {
+      hash: Binary.createFromBase64('CROYONlS8mj9xEYAc/usl/Ep6ME=', 0),
+      keyId: Long('7657627011719889078')
+    }
+  },
+  operationTime: Timestamp({ t: 1790619874, i: 66 })
+}
+
+=== Завдання 2. Work music index ===
+{
+  explainVersion: '1',
+  queryPlanner: {
+    namespace: 'spotify.tracks',
+    parsedQuery: {
+      '$and': [
+        {
+          explicit: {
+            '$eq': false
+          }
+        },
+        {
+          'audio_features.speechiness': {
+            '$lt': 0.1
+          }
+        },
+        {
+          'audio_features.instrumentalness': {
+            '$gt': 0.5
+          }
+        }
+      ]
+    },
+    indexFilterSet: false,
+    queryHash: '4F2944AB',
+    planCacheShapeHash: '4F2944AB',
+    planCacheKey: '8EB04DB9',
+    optimizationTimeMillis: 0,
+    maxIndexedOrSolutionsReached: false,
+    maxIndexedAndSolutionsReached: false,
+    maxScansToExplodeReached: false,
+    prunedSimilarIndexes: false,
+    winningPlan: {
+      isCached: false,
+      stage: 'FETCH',
+      inputStage: {
+        stage: 'IXSCAN',
+        keyPattern: {
+          explicit: 1,
+          'audio_features.instrumentalness': 1,
+          'audio_features.speechiness': 1
+        },
+        indexName: 'idx_work_music',
+        isMultiKey: false,
+        multiKeyPaths: {
+          explicit: [],
+          'audio_features.instrumentalness': [],
+          'audio_features.speechiness': []
+        },
+        isUnique: false,
+        isSparse: false,
+        isPartial: false,
+        indexVersion: 2,
+        direction: 'forward',
+        indexBounds: {
+          explicit: [
+            '[false, false]'
+          ],
+          'audio_features.instrumentalness': [
+            '(0.5, inf.0]'
+          ],
+          'audio_features.speechiness': [
+            '[-inf.0, 0.1)'
+          ]
+        }
+      }
+    },
+    rejectedPlans: []
+  },
+  executionStats: {
+    executionSuccess: true,
+    nReturned: 16141,
+    executionTimeMillis: 36,
+    totalKeysExamined: 16602,
+    totalDocsExamined: 16141,
+    executionStages: {
+      isCached: false,
+      stage: 'FETCH',
+      nReturned: 16141,
+      executionTimeMillisEstimate: 35,
+      works: 16602,
+      advanced: 16141,
+      needTime: 460,
+      needYield: 0,
+      saveState: 2,
+      restoreState: 2,
+      isEOF: 1,
+      docsExamined: 16141,
+      alreadyHasObj: 0,
+      inputStage: {
+        stage: 'IXSCAN',
+        nReturned: 16141,
+        executionTimeMillisEstimate: 13,
+        works: 16602,
+        advanced: 16141,
+        needTime: 460,
+        needYield: 0,
+        saveState: 2,
+        restoreState: 2,
+        isEOF: 1,
+        keyPattern: {
+          explicit: 1,
+          'audio_features.instrumentalness': 1,
+          'audio_features.speechiness': 1
+        },
+        indexName: 'idx_work_music',
+        isMultiKey: false,
+        multiKeyPaths: {
+          explicit: [],
+          'audio_features.instrumentalness': [],
+          'audio_features.speechiness': []
+        },
+        isUnique: false,
+        isSparse: false,
+        isPartial: false,
+        indexVersion: 2,
+        direction: 'forward',
+        indexBounds: {
+          explicit: [
+            '[false, false]'
+          ],
+          'audio_features.instrumentalness': [
+            '(0.5, inf.0]'
+          ],
+          'audio_features.speechiness': [
+            '[-inf.0, 0.1)'
+          ]
+        },
+        keysExamined: 16602,
+        seeks: 461,
+        dupsTested: 0,
+        dupsDropped: 0
+      }
+    }
+  },
+  queryShapeHash: '8C29BD45B5F3E1E44EBEEA783F6F9672EA49AB946CA975747FC4A145CD3185BA',
+  command: {
+    find: 'tracks',
+    filter: {
+      explicit: false,
+      'audio_features.instrumentalness': {
+        '$gt': 0.5
+      },
+      'audio_features.speechiness': {
+        '$lt': 0.1
+      }
+    },
+    '$db': 'spotify'
+  },
+  serverInfo: {
+    host: 'ac-ocjzcqw-shard-00-01.3foxqpi.mongodb.net',
+    port: 27017,
+    version: '8.0.32',
+    gitVersion: 'f9eb55a7cc900f33a722a5b32a0fdbf54385c749'
+  },
+  serverParameters: {
+    internalQueryFacetBufferSizeBytes: 104857600,
+    internalQueryFacetMaxOutputDocSizeBytes: 104857600,
+    internalLookupStageIntermediateDocumentMaxSizeBytes: 16793600,
+    internalDocumentSourceGroupMaxMemoryBytes: 104857600,
+    internalQueryMaxBlockingSortMemoryUsageBytes: 33554432,
+    internalQueryProhibitBlockingMergeOnMongoS: 0,
+    internalQueryMaxAddToSetBytes: 104857600,
+    internalDocumentSourceSetWindowFieldsMaxMemoryBytes: 104857600,
+    internalQueryFrameworkControl: 'trySbeRestricted',
+    internalQueryPlannerIgnoreIndexWithCollationForRegex: 1
+  },
+  ok: 1,
+  '$clusterTime': {
+    clusterTime: Timestamp({ t: 1790619874, i: 83 }),
+    signature: {
+      hash: Binary.createFromBase64('CROYONlS8mj9xEYAc/usl/Ep6ME=', 0),
+      keyId: Long('7657627011719889078')
+    }
+  },
+  operationTime: Timestamp({ t: 1790619874, i: 83 })
+}
+
+=== Завдання 3. Covered query check ===
+{
+  explainVersion: '1',
+  queryPlanner: {
+    namespace: 'spotify.tracks',
+    parsedQuery: {
+      '$and': [
+        {
+          track_genre: {
+            '$eq': 'pop'
+          }
+        },
+        {
+          popularity: {
+            '$gte': 70
+          }
+        }
+      ]
+    },
+    indexFilterSet: false,
+    queryHash: '122B8EF1',
+    planCacheShapeHash: '122B8EF1',
+    planCacheKey: '7F397BE4',
+    optimizationTimeMillis: 0,
+    maxIndexedOrSolutionsReached: false,
+    maxIndexedAndSolutionsReached: false,
+    maxScansToExplodeReached: false,
+    prunedSimilarIndexes: false,
+    winningPlan: {
+      isCached: false,
+      stage: 'FETCH',
+      inputStage: {
+        stage: 'IXSCAN',
+        keyPattern: {
+          track_genre: 1,
+          popularity: -1,
+          'audio_features.danceability': 1
+        },
+        indexName: 'idx_genre_popularity_danceability',
+        isMultiKey: false,
+        multiKeyPaths: {
+          track_genre: [],
+          popularity: [],
+          'audio_features.danceability': []
+        },
+        isUnique: false,
+        isSparse: false,
+        isPartial: false,
+        indexVersion: 2,
+        direction: 'forward',
+        indexBounds: {
+          track_genre: [
+            '["pop", "pop"]'
+          ],
+          popularity: [
+            '[inf.0, 70]'
+          ],
+          'audio_features.danceability': [
+            '[MinKey, MaxKey]'
+          ]
+        }
+      }
+    },
+    rejectedPlans: []
+  },
+  executionStats: {
+    executionSuccess: true,
+    nReturned: 317,
+    executionTimeMillis: 0,
+    totalKeysExamined: 317,
+    totalDocsExamined: 317,
+    executionStages: {
+      isCached: false,
+      stage: 'FETCH',
+      nReturned: 317,
+      executionTimeMillisEstimate: 0,
+      works: 318,
+      advanced: 317,
+      needTime: 0,
+      needYield: 0,
+      saveState: 0,
+      restoreState: 0,
+      isEOF: 1,
+      docsExamined: 317,
+      alreadyHasObj: 0,
+      inputStage: {
+        stage: 'IXSCAN',
+        nReturned: 317,
+        executionTimeMillisEstimate: 0,
+        works: 318,
+        advanced: 317,
+        needTime: 0,
+        needYield: 0,
+        saveState: 0,
+        restoreState: 0,
+        isEOF: 1,
+        keyPattern: {
+          track_genre: 1,
+          popularity: -1,
+          'audio_features.danceability': 1
+        },
+        indexName: 'idx_genre_popularity_danceability',
+        isMultiKey: false,
+        multiKeyPaths: {
+          track_genre: [],
+          popularity: [],
+          'audio_features.danceability': []
+        },
+        isUnique: false,
+        isSparse: false,
+        isPartial: false,
+        indexVersion: 2,
+        direction: 'forward',
+        indexBounds: {
+          track_genre: [
+            '["pop", "pop"]'
+          ],
+          popularity: [
+            '[inf.0, 70]'
+          ],
+          'audio_features.danceability': [
+            '[MinKey, MaxKey]'
+          ]
+        },
+        keysExamined: 317,
+        seeks: 1,
+        dupsTested: 0,
+        dupsDropped: 0
+      }
+    }
+  },
+  queryShapeHash: '5D87C84AE398B5FA89376B2A45E8B5C90AE042A96CAE35ED3945FBFD439EB508',
+  command: {
+    find: 'tracks',
+    filter: {
+      track_genre: 'pop',
+      popularity: {
+        '$gte': 70
+      }
+    },
+    '$db': 'spotify'
+  },
+  serverInfo: {
+    host: 'ac-ocjzcqw-shard-00-01.3foxqpi.mongodb.net',
+    port: 27017,
+    version: '8.0.32',
+    gitVersion: 'f9eb55a7cc900f33a722a5b32a0fdbf54385c749'
+  },
+  serverParameters: {
+    internalQueryFacetBufferSizeBytes: 104857600,
+    internalQueryFacetMaxOutputDocSizeBytes: 104857600,
+    internalLookupStageIntermediateDocumentMaxSizeBytes: 16793600,
+    internalDocumentSourceGroupMaxMemoryBytes: 104857600,
+    internalQueryMaxBlockingSortMemoryUsageBytes: 33554432,
+    internalQueryProhibitBlockingMergeOnMongoS: 0,
+    internalQueryMaxAddToSetBytes: 104857600,
+    internalDocumentSourceSetWindowFieldsMaxMemoryBytes: 104857600,
+    internalQueryFrameworkControl: 'trySbeRestricted',
+    internalQueryPlannerIgnoreIndexWithCollationForRegex: 1
+  },
+  ok: 1,
+  '$clusterTime': {
+    clusterTime: Timestamp({ t: 1790619874, i: 87 }),
+    signature: {
+      hash: Binary.createFromBase64('CROYONlS8mj9xEYAc/usl/Ep6ME=', 0),
+      keyId: Long('7657627011719889078')
+    }
+  },
+  operationTime: Timestamp({ t: 1790619874, i: 87 })
+}
